@@ -1,88 +1,66 @@
-# ComfyUI VNCCS Utils
+# ComfyUI VNCCS Utils — GLB Fork
 
-A collection of utility nodes from the [VNCCS](https://github.com/AHEKOT/ComfyUI_VNCCS) project that are useful not only for the project's primary goals but also for everyday ComfyUI workflows.
+This is a fork of the excellent [ComfyUI_VNCCS_Utils](https://github.com/AHEKOT/ComfyUI_VNCCS) project by [AHEKOT](https://github.com/AHEKOT), extended to add GLB model support via the Boyo GLB Pose Studio node.
+
+Full credit and thanks to the original VNCCS project team — the architecture, patterns, and frontend approach used in this fork are directly derived from their work, particularly the VNCCS Pose Studio node. Please consider supporting the original project:
+
+
+**Fork repository:** https://github.com/DragonDiffusionbyBoyo/ComfyUI_Boyo_VNCCS_Utils_GLB
 
 ---
-<a href="https://discord.com/invite/9Dacp4wvQw" target="_blank"><img src="https://img.shields.io/badge/Join%20our%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white" style="height: 60px !important;"></a>
+<a href="https://discord.com/invite/9Dacp4wvQw" target="_blank"><img src="https://img.shields.io/badge/Join%20the%20original%20VNCCS%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white" style="height: 60px !important;"></a>
 
 ---
 
-## **If you find my project useful, please consider supporting it! I work on it completely on my own, and your support will allow me to continue maintaining it and adding even more cool features!**
+## What This Fork Adds
 
-<a href="https://www.buymeacoffee.com/MIUProject" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+### Boyo GLB Pose Studio
 
-## Main Nodes
+A GLB model viewer and pose reference node for ComfyUI, built directly on top of the VNCCS Pose Studio architecture. Where the original Pose Studio works with MakeHuman meshes, this node accepts any `.glb` file — making it particularly useful for exporting custom posed characters from DAZ Studio via Blender with poses baked in.
 
-### 1. VNCCS Visual Camera Control
-**[Example Workflow](workflows/VNCCS_Utils%20Visual%20camera%20control%20node%20for%20Qwen-Image-Edit-2511-Multiple-Angles%20LoRa.json)**
+The primary use case is generating pose reference images for ControlNet and LoRA training, using your own rigged character assets rather than being limited to the MakeHuman base mesh.
 
-An interactive node with a visual widget for controlling camera position. This is the primary node for intuitive angle control.
-These node is specifically designed for advanced camera control and prompt generation, optimized for multi-angle LoRAs like **Qwen-Image-Edit-2511-Multiple-Angles**.
+*   **GLB Loading**: Load any `.glb` file directly in the node widget
+*   **Dynamic Skeleton Detection**: Automatically detects armatures in loaded models and generates bone rotation controls based on whatever bones are present
+*   **Bone Rotation Controls**: Per-bone X/Y/Z sliders generated at load time from the model's actual armature
+*   **Model Position Controls**: Translate the model in 3D space to frame up any section
+*   **Interactive Viewport**: Left drag to rotate, right drag to pan, scroll to zoom
+*   **Lighting Controls**: Ambient, directional, and point lights with colour and intensity controls
+*   **Black Background Output**: Clean black background by default, ideal for ControlNet use
+*   **1024×1024 Output**: Captures at 1024×1024 regardless of viewport size
+*   **Natural Language Lighting Prompts**: Generates descriptive lighting prompts from your current light setup
 
-*   **Visual Widget**: Allows mouse-based selection of azimuth (rotation around the subject) and distance (rings).
-*   **Elevation Slider**: A vertical bar on the right for selecting the elevation angle (-30° to 60°).
-*   **Trigger Word**: A square indicator in the bottom-right corner toggles the presence of the <sks> trigger in the prompt (green for ON, red for OFF).
+The node follows the VNCCS Pose Studio architectural patterns exactly — Three.js loaded via ESM, Python backend handles only image decoding and tensor conversion, all rendering happens in the frontend widget.
 
-### 2. VNCCS QWEN Detailer
-**[Example Workflow](workflows/VNCCS_Utils%20QwenDetailer_ChangeEmotion.json)**
+---
 
-A powerful detailing node that leverages QWEN-Image-Edit2511 model to enhance detected regions (faces, hands, objects). It goes beyond standard detailers by using visual understanding to guide the enhancement process.
+## Original VNCCS Nodes
 
-*   **Smart Cropping**: Automatically squares crops and handles padding for optimal model input.
-*   **Vision-Guided Enhancement**: Uses QWEN-generated instructions or user prompts to guide the detailing.
-*   **Drift Fix**: Includes mechanisms to prevent the enhanced region from drifting too far from the original composition.
-*   **Quality of Life**: Built-in color matching, Poisson blending (seam fix), and versatile upscaling options.
-*   **Inpainting Mode**: specialized mode for mask-based editing or filling black areas.
-*   **Inputs**: Requires standard model/clip/vae plus a BBOX_DETECTOR (like YOLO).
-*   **Options**: Supports QWEN-Image-Edit2511 specific optimizations (`distortion_fix`, `qwen_2511` mode).
+All original nodes from the VNCCS project are included in this fork unchanged. See the [original repository](https://github.com/AHEKOT/ComfyUI_VNCCS) for full documentation on these.
 
-### 3. VNCCS Model Manager & Selector
-**[Example Workflow](workflows/VNCCS_Utils%20Model%20Loader%20ShowCase.json)**
+### VNCCS Visual Camera Control
 
-A robust system for managing and selecting models (LoRAs, Checkpoints) directly within ComfyUI, with support for Civitai and HuggingFace.
+An interactive node with a visual widget for controlling camera position, optimised for multi-angle LoRAs like **Qwen-Image-Edit-2511-Multiple-Angles**.
 
-#### VNCCS Model Manager
-This node acts as the backend for the system. It connects to a HuggingFace repository containing a `model_updater.json` configuration file, which defines the available models and their download sources.
-*   **Repo ID**: Specify the HuggingFace repository ID.
-*   **Downloads**: Handles downloading models in the background with queue support.
-*   **Civitai Support**: Supports API Key authentication for restricted Civitai models.
+### VNCCS QWEN Detailer
 
-👉 **[Configuration Guide: How to create your own model repo](docs/MODEL_MANAGER_GUIDE.md)**
+A detailing node leveraging QWEN-Image-Edit2511 for region enhancement with smart cropping, vision-guided enhancement, and Poisson blending.
 
-#### VNCCS Model Selector
-The companion node for selecting models. It provides a rich Graphical User Interface.
-*   **Visual Card UI**: Displays the selected model's name, version, installed status, and description in a clean card format.
-*   **Smart Search**: Clicking the card opens a modal with a searchable list of all available models in the repository.
-*   **Status Indicators**: Shows clear indicators for "Installed", "Update Available", "Missing", or "Downloading".
-*   **One-Click Install/Update**: Allows downloading or updating models directly from the list.
-*   **Universal Connection**: Outputs a standard relative path string that is **fully compatible with standard ComfyUI nodes**. You can connect it directly!
+### VNCCS Model Manager & Selector
 
-👉 **[Usage Guide: How to use Selector with Standard Loaders](docs/MODEL_SELECTOR_USAGE.md)**
+A model management system with HuggingFace and Civitai support, visual card UI, and one-click install/update.
 
-### 4. VNCCS BBox Extractor
-A helper node to simply extract and visualize the crops. Useful when you need extract bbox detected regions but don't want to run whole facedetailer.
+### VNCCS BBox Extractor
 
-### 5. VNCCS Pose Studio
-**[Example Workflow](workflows/VNCCS_Utils%20Pose%20Studio.json)**
+Helper node for extracting and visualising bounding box crops from detection results.
 
-A professional 3D posing and lighting environment running entirely within a ComfyUI node.
+### VNCCS Pose Studio
 
-*   **Interactive Viewport**: Sophisticated bone manipulation with gizmos and **Undo/Redo** functionality.
-*   **Dynamic Body Generator**: Fine-tune character physical attributes including Age, Gender blending, Weight, Muscle, and Height with intuitive sliders.
-*   **Advanced Environment Lighting**: Ambient, Directional, and **Point Lights** with interactive 2D radars and radius control.
-*   **Keep Original Lighting**: One-click mode to bypass synthetic lights for clean, flat-white renders (ideal for ControlNet).
-*   **Customizable Prompt Templates**: Use tag-based templates (e.g., `<lighting>`, `<user_prompt>`) to define exactly how your final prompt is structured in settings.
-*   **Direct Sidebar Prompting**: A "Prompt" section in the right sidebar with an auto-expanding text box for adding scene details on the fly.
-*   **Modal Pose Gallery**: A clean, full-screen gallery to manage and load saved poses without cluttering the UI.
-*   **Multi-Pose Tabs**: System for creating batch outputs or sequences within a single node.
-*   **Precision Framing**: Integrated camera radar and Zoom controls with a clean viewport frame visualization.
-*   **Natural Language Prompts**: Automatically generates descriptive lighting prompts for seamless scene integration.
-*   **Tracing Support**: Load background reference images for precise character alignment.
+The original MakeHuman-based 3D posing environment with bone gizmos, undo/redo, dynamic body generator, multi-pose tabs, and tracing support. The Boyo GLB Pose Studio node in this fork is built on its foundations.
 
-👉 **[Detailed Usage Guide](docs/VNCCS_POSE_STUDIO_USAGE.md)**
+---
 
 ## Installation
 
-1. Copy the ComfyUI_VNCCS_Utils folder into your ComfyUI custom_nodes directory.
+1. Copy the `ComfyUI_Boyo_VNCCS_Utils_GLB` folder into your ComfyUI `custom_nodes` directory.
 2. Restart ComfyUI.
-

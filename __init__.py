@@ -2,6 +2,8 @@ from .nodes.vnccs_nodes import VNCCS_PositionControl, VNCCS_VisualPositionContro
 from .nodes.vnccs_qwen_detailer import VNCCS_QWEN_Detailer, VNCCS_BBox_Extractor
 from .nodes.vnccs_model_manager import VNCCS_ModelManager, VNCCS_ModelSelector
 from .nodes.pose_studio import VNCCS_PoseStudio
+from .Boyo_GLB_PoseStudio import NODE_CLASS_MAPPINGS as BOYO_GLB_MAPPINGS          # NEW
+from .Boyo_GLB_PoseStudio import NODE_DISPLAY_NAME_MAPPINGS as BOYO_GLB_DISPLAY_MAPPINGS 
 
 NODE_CLASS_MAPPINGS = {
     "VNCCS_PositionControl": VNCCS_PositionControl,
@@ -12,6 +14,7 @@ NODE_CLASS_MAPPINGS = {
     "VNCCS_ModelSelector": VNCCS_ModelSelector,
     "VNCCS_PoseStudio": VNCCS_PoseStudio,
 }
+NODE_CLASS_MAPPINGS.update(BOYO_GLB_MAPPINGS)
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "VNCCS_PositionControl": "VNCCS Position Control",
@@ -22,9 +25,9 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "VNCCS_ModelSelector": "VNCCS Model Selector",
     "VNCCS_PoseStudio": "VNCCS Pose Studio",
 }
+NODE_DISPLAY_NAME_MAPPINGS.update(BOYO_GLB_DISPLAY_MAPPINGS)  # ← Fixed!
 
 WEB_DIRECTORY = "./web"
-
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS", "WEB_DIRECTORY"]
 
 
